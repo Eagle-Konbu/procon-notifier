@@ -1,13 +1,17 @@
-use aws_lambda_events::event::cloudwatch_events::CloudWatchEvent;use lambda_runtime::{run, service_fn, Error, LambdaEvent};
+use aws_lambda_events::event::cloudwatch_events::CloudWatchEvent;
+use lambda_runtime::{run, service_fn, Error, LambdaEvent};
+use procon_notifier::{fetcher::fetch_upcoming_contests, slack};
 
 /// This is the main body for the function.
 /// Write your code inside it.
 /// There are some code example in the following URLs:
 /// - https://github.com/awslabs/aws-lambda-rust-runtime/tree/main/examples
 /// - https://github.com/aws-samples/serverless-rust-demo/
-async fn function_handler(event: LambdaEvent<CloudWatchEvent>) -> Result<(), Error> {
+async fn function_handler(_event: LambdaEvent<CloudWatchEvent>) -> Result<(), Error> {
     // Extract some useful information from the request
+    let contests = fetch_upcoming_contests().await;
 
+    slack::send(&contests).await?;
     Ok(())
 }
 

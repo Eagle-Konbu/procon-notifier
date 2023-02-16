@@ -1,10 +1,10 @@
 use crate::contest::{Contest, Host};
-use reqwest::{Client, Error};
-use std::env;
-use serde_json::json;
 use chrono_tz::Asia::Tokyo;
+use reqwest::{Client, Error};
+use serde_json::json;
+use std::env;
 
-async fn send(contests: &[Contest]) -> Result<(), Error> {
+pub async fn send(contests: &[Contest]) -> Result<(), Error> {
     let url = env::var("SLACK_URL").unwrap();
     let mut blocks = vec![
         json!({
@@ -16,10 +16,17 @@ async fn send(contests: &[Contest]) -> Result<(), Error> {
         }),
         json!({
             "type": "divider"
-        })
+        }),
     ];
 
-    for &host in vec![Host::AtCoder, Host::Codeforces, Host::Yukicoder, Host::Topcoder].iter() {
+    for &host in vec![
+        Host::AtCoder,
+        Host::Codeforces,
+        Host::Yukicoder,
+        Host::Topcoder,
+    ]
+    .iter()
+    {
         let filtered_contests = contests.iter().filter(|contest| contest.host == host);
         if filtered_contests.clone().count() == 0 {
             continue;
@@ -34,7 +41,11 @@ async fn send(contests: &[Contest]) -> Result<(), Error> {
         }));
 
         for contest in filtered_contests {
-            let start_time_str = contest.start_time.with_timezone(&Tokyo).format("%m/%d (%a) %H:%M").to_string();
+            let start_time_str = contest
+                .start_time
+                .with_timezone(&Tokyo)
+                .format("%m/%d (%a) %H:%M")
+                .to_string();
             blocks.push(json!({
                 "type": "section",
                 "text": {
@@ -48,9 +59,7 @@ async fn send(contests: &[Contest]) -> Result<(), Error> {
         }
     }
 
-    let body = json!({
-        "blocks": blocks
-    });
+    let body = json!({ "blocks": blocks });
 
     let client = Client::new();
     client.post(&url).json(&body).send().await?;

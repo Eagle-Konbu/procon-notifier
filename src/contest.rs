@@ -26,7 +26,7 @@ pub enum Host {
     AtCoder,
     Codeforces,
     Yukicoder,
-    Topcoder
+    Topcoder,
 }
 
 impl fmt::Display for Host {
