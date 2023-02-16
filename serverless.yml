@@ -12,7 +12,7 @@ provider:
   architecture: arm64
 
 package: 
-  artifact: .target/lambda/procon-notifier/bootstrap.zip
+  artifact: target/lambda/procon-notifier/bootstrap.zip
 
 functions:
   notify:
