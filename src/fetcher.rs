@@ -69,8 +69,7 @@ async fn fetch_atcoder_contests() -> Vec<Contest> {
         ));
     }
 
-    println!("AtCoder done");
-
+    contests.sort_by_key(|contest| contest.start_time);
     contests
 }
 
@@ -92,7 +91,7 @@ async fn fetch_cf_contests() -> Vec<Contest> {
         contests.push(Contest::new(name, start_time, None, Host::Codeforces));
     }
 
-    contests.reverse();
+    contests.sort_by_key(|contest| contest.start_time);
     contests
 }
 
