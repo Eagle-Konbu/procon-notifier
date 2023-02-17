@@ -59,7 +59,7 @@ pub async fn send(contests: &[Contest]) -> Result<(), Error> {
         }
     }
 
-    let body = json!({ "blocks": blocks });
+    let body = json!({ "blocks": blocks, "text": "今週の競プロ" });
 
     let client = Client::new();
     client.post(&url).json(&body).send().await?;
