@@ -35,9 +35,6 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    needs:
-      - fmt
-      - clippy
     steps:
     - uses: actions-rs/cargo@v1
       name: Run Tests
@@ -49,7 +46,10 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SLACK_URL: ${{ secrets.SLACK_URL }}
-    needs: test
+    needs:
+      - fmt
+      - clippy
+      - test
     steps:
     - uses: actions/checkout@v3
     - name: Build Package
