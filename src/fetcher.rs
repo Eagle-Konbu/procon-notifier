@@ -1,4 +1,4 @@
-use chrono::{DateTime, Local, TimeZone, Utc};
+use chrono::{TimeZone, Utc};
 use chrono_tz::Asia::Tokyo;
 use scraper::{Html, Selector};
 
