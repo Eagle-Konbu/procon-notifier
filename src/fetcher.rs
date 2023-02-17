@@ -1,4 +1,5 @@
 use chrono::{DateTime, Local, TimeZone, Utc};
+use chrono_tz::Asia::Tokyo;
 use scraper::{Html, Selector};
 
 use crate::contest::{Contest, Host};
@@ -50,7 +51,7 @@ async fn fetch_atcoder_contests() -> Vec<Contest> {
             .unwrap()
             .to_string();
 
-        let start_time = Local
+        let start_time = Tokyo
             .datetime_from_str(
                 &start_time_str
                     .chars()
@@ -62,7 +63,7 @@ async fn fetch_atcoder_contests() -> Vec<Contest> {
 
         contests.push(Contest::new(
             name,
-            DateTime::from(start_time),
+            start_time.with_timezone(&Utc),
             Some(format!("https://atcoder.jp{}", path)),
             Host::AtCoder,
         ));
