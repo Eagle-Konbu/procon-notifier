@@ -1,4 +1,4 @@
-use chrono::{TimeZone, Utc, Local, DateTime};
+use chrono::{DateTime, Local, TimeZone, Utc};
 use scraper::{Html, Selector};
 
 use crate::contest::{Contest, Host};
