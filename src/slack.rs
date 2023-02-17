@@ -41,11 +41,26 @@ pub async fn send(contests: &[Contest]) -> Result<(), Error> {
         }));
 
         for contest in filtered_contests {
-            let start_time_str = contest
+            let mut start_time_str = contest
                 .start_time
                 .with_timezone(&Tokyo)
                 .format("%m/%d (%a) %H:%M")
                 .to_string();
+
+            for &(from, to) in vec![
+                ("Mon", "月"),
+                ("Tue", "火"),
+                ("Wed", "水"),
+                ("Thu", "木"),
+                ("Fri", "金"),
+                ("Sat", "土"),
+                ("Sun", "日"),
+            ]
+            .iter()
+            {
+                start_time_str = start_time_str.replace(from, to);
+            }
+
             blocks.push(json!({
                 "type": "section",
                 "text": {
