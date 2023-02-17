@@ -42,6 +42,7 @@ jobs:
       with:
         command: test
         args: --release --all-features
+    - uses: Swatinem/rust-cache@v2
 
   deploy:
     runs-on: ubuntu-latest
