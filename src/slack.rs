@@ -1,11 +1,21 @@
 use crate::contest::{Contest, Host};
 use chrono_tz::Asia::Tokyo;
 use reqwest::{Client, Error};
-use serde_json::json;
+use serde_json::{json, Value};
 use std::env;
 
 pub async fn send(contests: &[Contest]) -> Result<(), Error> {
     let url = env::var("SLACK_URL").unwrap();
+
+    let body = message_body(contests);
+
+    let client = Client::new();
+    client.post(&url).json(&body).send().await?;
+
+    Ok(())
+}
+
+fn message_body(contests: &[Contest]) -> Value {
     let mut blocks = vec![
         json!({
             "type": "header",
@@ -77,10 +87,33 @@ pub async fn send(contests: &[Contest]) -> Result<(), Error> {
         }));
     }
 
-    let body = json!({ "blocks": blocks, "text": "今週の競プロ" });
+    json!({ "blocks": blocks, "text": "今週の競プロ" })
+}
 
-    let client = Client::new();
-    client.post(&url).json(&body).send().await?;
+#[cfg(test)]
+mod tests {
+    use chrono::{Duration, Utc};
 
-    Ok(())
+    use super::*;
+
+    #[test]
+    fn bench_message_body() {
+        let contests = (1..100)
+            .map(|i| {
+                Contest::new(
+                    format!("Contest {}", i),
+                    Utc::now() + Duration::days(i),
+                    Some(format!("https://atcoder.jp/contests/abc{}", i)),
+                    if i % 2 == 0 {
+                        Host::AtCoder
+                    } else {
+                        Host::Codeforces
+                    },
+                )
+            })
+            .collect::<Vec<_>>();
+
+        let body = message_body(&contests);
+        assert!(body["text"].as_str().unwrap().contains("今週の競プロ"));
+    }
 }

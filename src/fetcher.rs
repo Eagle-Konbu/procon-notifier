@@ -95,25 +95,30 @@ async fn fetch_cf_contests() -> Vec<Contest> {
     contests
 }
 
-#[tokio::test]
-async fn test_fetch_atcoder_contests() {
-    let contests = fetch_atcoder_contests().await;
-    assert!(contests.iter().all(|contest| contest.host == Host::AtCoder));
-}
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-#[tokio::test]
-async fn test_fetch_cf_contests() {
-    let contests = fetch_cf_contests().await;
-    assert!(contests
-        .iter()
-        .all(|contest| contest.host == Host::Codeforces));
-}
+    #[tokio::test]
+    async fn test_fetch_atcoder_contests() {
+        let contests = fetch_atcoder_contests().await;
+        assert!(contests.iter().all(|contest| contest.host == Host::AtCoder));
+    }
 
-#[tokio::test]
-async fn test_fetch_upcoming_contests() {
-    let contests = fetch_upcoming_contests().await;
-    assert!(contests
-        .iter()
-        .all(|contest| contest.start_time > Utc::now()
-            && contest.start_time < Utc::now() + chrono::Duration::weeks(1)));
+    #[tokio::test]
+    async fn test_fetch_cf_contests() {
+        let contests = fetch_cf_contests().await;
+        assert!(contests
+            .iter()
+            .all(|contest| contest.host == Host::Codeforces));
+    }
+
+    #[tokio::test]
+    async fn test_fetch_upcoming_contests() {
+        let contests = fetch_upcoming_contests().await;
+        assert!(contests
+            .iter()
+            .all(|contest| contest.start_time > Utc::now()
+                && contest.start_time < Utc::now() + chrono::Duration::weeks(1)));
+    }
 }
