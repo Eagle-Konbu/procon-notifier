@@ -57,6 +57,9 @@ pub async fn send(contests: &[Contest]) -> Result<(), Error> {
                 }
             }));
         }
+        blocks.push(json!({
+            "type": "divider"
+        }));
     }
 
     let body = json!({ "blocks": blocks, "text": "今週の競プロ" });
